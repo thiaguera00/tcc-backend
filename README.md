@@ -1,6 +1,6 @@
 ## Tecnologias
 
-NodeJs, TypeScript, Docker, Prisma e Prisma ORM
+NestJS, NodeJs, TypeScript, Docker, Prisma e Prisma ORM
 
 ## Configurações iniciais do projeto
 
