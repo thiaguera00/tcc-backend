@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { IaAssistentService } from '../ia-assistent/ia.assistent.service';
-import { IaAssistentController } from '../ia-assistent/ia.assistent.controller';
+import { IaAssistentService } from './ia-assistent/ia.assistent.service';
+import { IaAssistentController } from './ia-assistent/ia.assistent.controller';
 
 @Module({
   imports: [],
