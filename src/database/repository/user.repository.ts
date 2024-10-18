@@ -1,7 +1,7 @@
-import { ICreateUser } from 'src/interfaces/user.interfaces';
+import { ICreateUser } from 'src/models/interfaces/user.interfaces';
 import { prisma } from '..';
 import * as bcrypt from 'bcrypt'; // Importar o bcrypt
-import { Role } from 'src/enums/role';
+import { Role } from 'src/models/enums/role';
 
 export class UserRepository {
   async createUserStudent(user: ICreateUser) {

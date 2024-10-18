@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from 'src/database/repository/user.repository';
-import { ICreateUser } from 'src/interfaces/user.interfaces';
+import { ICreateUser } from 'src/models/interfaces/user.interfaces';
 
 @Injectable()
 export class UserService {

@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ICreateUser } from 'src/interfaces/user.interfaces';
+import { ICreateUser } from 'src/models/interfaces/user.interfaces';
 import { createUserSchema } from 'src/schemas/user.validation';
 
 @Controller('users')
