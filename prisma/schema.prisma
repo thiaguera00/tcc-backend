@@ -14,7 +14,8 @@ model User {
   password        String
   role            String
   is_first_access Boolean
-  points          BigInt
+  level           String?
+  points          Int
   created_at      DateTime
   updated_at      DateTime
   deleted_at      DateTime?
