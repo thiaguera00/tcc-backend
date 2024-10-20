@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { SearchRepository } from 'src/database/repository/search.repository';
+import { UserRepository } from 'src/database/repository/user.repository';
 
 @Injectable()
 export class IaAssistentService {
-  constructor(private readonly searchRepository: SearchRepository) {}
+  constructor(
+    private readonly searchRepository: SearchRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
   async sendQuestion(level: string, content: string): Promise<string> {
     try {
       const response = await axios.post(
@@ -85,23 +89,23 @@ export class IaAssistentService {
   }
 
   async classificationStudent(
-    responseStundent: string[],
+    responseStudent: string[],
     userId: string,
   ): Promise<string> {
     try {
       console.log(
         'Enviando respostas para a IA:',
-        responseStundent[0],
-        responseStundent[1],
-        responseStundent[2],
+        responseStudent[0],
+        responseStudent[1],
+        responseStudent[2],
       );
 
       const response = await axios.post(
         'https://ia-assistente-python.onrender.com/classificar-nivel/',
         {
-          resposta1: responseStundent[0],
-          resposta2: responseStundent[1],
-          resposta3: responseStundent[2],
+          resposta1: responseStudent[0],
+          resposta2: responseStudent[1],
+          resposta3: responseStudent[2],
         },
         {
           headers: {
@@ -118,17 +122,25 @@ export class IaAssistentService {
       }
 
       const nivel = response.data.nivel;
+      console.log('Nível determinado pela IA:', nivel);
 
       const createSearchData = {
         userId,
-        level_knowledge: responseStundent[0],
-        language: responseStundent[1],
-        learning_objective: responseStundent[2],
+        level_knowledge: responseStudent[0],
+        language: responseStudent[1],
+        learning_objective: responseStudent[2],
         created_at: new Date(),
         updated_at: new Date(),
       };
 
       await this.searchRepository.create(createSearchData);
+
+      const userLevel = this.extractLevelFromIAResponse(nivel);
+      await this.userRepository.update(userId, {
+        level: userLevel,
+        is_first_access: false,
+        updated_at: new Date(),
+      });
 
       return nivel;
     } catch (error) {
@@ -142,5 +154,17 @@ export class IaAssistentService {
       }
       throw new Error('Não foi possível obter uma resposta da IA');
     }
+  }
+
+  private extractLevelFromIAResponse(response: string): string {
+    const nivel = response.toLowerCase();
+    if (nivel.includes('iniciante')) {
+      return 'Iniciante';
+    } else if (nivel.includes('intermediário')) {
+      return 'Intermediário';
+    } else if (nivel.includes('avançado')) {
+      return 'Avançado';
+    }
+    return 'Não identificado';
   }
 }
