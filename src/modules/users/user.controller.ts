@@ -1,7 +1,16 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { ICreateUser } from 'src/models/interfaces/user.interfaces';
+import { CustomRequest, ICreateUser } from 'src/models/dtos/user.dto';
 import { createUserSchema } from 'src/schemas/user.validation';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -16,5 +25,12 @@ export class UserController {
     }
 
     return this.userService.createStudent(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/me')
+  async findMe(@Req() request: CustomRequest) {
+    const userId = request.user.userId;
+    return this.userService.findMe(userId);
   }
 }

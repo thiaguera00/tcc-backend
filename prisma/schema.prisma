@@ -20,5 +20,22 @@ model User {
   updated_at      DateTime
   deleted_at      DateTime?
 
+  searches        Search[]
+
   @@map("users")
 }
+
+model Search {
+  id                String   @id @default(uuid())
+  user_id           String   @unique
+  user              User     @relation(fields: [user_id], references: [id])
+  level_knowledge   String
+  language          String
+  learning_objective String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("search")
+}
+
+

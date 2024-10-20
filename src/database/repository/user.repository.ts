@@ -1,6 +1,6 @@
-import { ICreateUser } from 'src/models/interfaces/user.interfaces';
+import { ICreateUser } from 'src/models/dtos/user.dto';
 import { prisma } from '..';
-import * as bcrypt from 'bcrypt'; // Importar o bcrypt
+import * as bcrypt from 'bcrypt';
 import { Role } from 'src/models/enums/role';
 
 export class UserRepository {
@@ -27,6 +27,23 @@ export class UserRepository {
   async findByEmail(email: string) {
     return prisma.user.findUnique({
       where: { email },
+    });
+  }
+
+  async findMe(userId: string) {
+    return await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        level: true,
+        points: true,
+        is_first_access: true,
+      },
     });
   }
 }

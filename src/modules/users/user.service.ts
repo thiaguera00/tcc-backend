@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from 'src/database/repository/user.repository';
-import { ICreateUser } from 'src/models/interfaces/user.interfaces';
+import { ICreateUser } from 'src/models/dtos/user.dto';
 
 @Injectable()
 export class UserService {
@@ -26,6 +26,15 @@ export class UserService {
     }
   }
 
+  async findMe(userId: string) {
+    const user = await this.userRepository.findMe(userId);
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return user;
+  }
   async findByEmail(email: string) {
     const user = await this.userRepository.findByEmail(email);
 
