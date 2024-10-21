@@ -1,4 +1,4 @@
-import { ICreateUser } from 'src/models/dtos/user.dto';
+import { ICreateUser, IUpdateUser } from 'src/models/dtos/user.dto';
 import { prisma } from '..';
 import * as bcrypt from 'bcrypt';
 import { Role } from 'src/models/enums/role';
@@ -61,6 +61,16 @@ export class UserRepository {
       where: { id: userId },
       data: {
         ...data,
+        updated_at: new Date(),
+      },
+    });
+  }
+
+  async updateUser(userId: string, userData: IUpdateUser) {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...userData,
         updated_at: new Date(),
       },
     });

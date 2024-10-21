@@ -10,3 +10,9 @@ export interface CustomRequest extends Request {
     email: string;
   };
 }
+
+export interface IUpdateUser {
+  name?: string;
+  email?: string;
+  password?: string;
+}

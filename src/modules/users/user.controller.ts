@@ -8,7 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CustomRequest, ICreateUser } from 'src/models/dtos/user.dto';
+import {
+  CustomRequest,
+  ICreateUser,
+  IUpdateUser,
+} from 'src/models/dtos/user.dto';
 import { createUserSchema } from 'src/schemas/user.validation';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -32,5 +36,11 @@ export class UserController {
   async findMe(@Req() request: CustomRequest) {
     const userId = request.user.userId;
     return this.userService.findMe(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/updateUser')
+  async update(@Body() userData: IUpdateUser, userId: string) {
+    return this.userService.update(userData, userId);
   }
 }

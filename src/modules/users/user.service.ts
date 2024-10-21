@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from 'src/database/repository/user.repository';
-import { ICreateUser } from 'src/models/dtos/user.dto';
+import { ICreateUser, IUpdateUser } from 'src/models/dtos/user.dto';
 
 @Injectable()
 export class UserService {
@@ -43,5 +43,19 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async update(userData: IUpdateUser, userId: string) {
+    try {
+      const existingUser = await this.userRepository.findMe(userId);
+
+      if (!existingUser) {
+        throw new NotFoundException('Usuário não encontrado');
+      }
+      return await this.userRepository.updateUser(userId, userData);
+    } catch (error) {
+      console.error('Error ao criar usuario:', error);
+      throw new ConflictException('Error ao criar usuario');
+    }
   }
 }
