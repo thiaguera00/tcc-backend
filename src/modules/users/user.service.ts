@@ -54,8 +54,8 @@ export class UserService {
       }
       return await this.userRepository.updateUser(userId, userData);
     } catch (error) {
-      console.error('Error ao criar usuario:', error);
-      throw new ConflictException('Error ao criar usuario');
+      console.error('Erro ao atualizar usuário:', error);
+      throw new ConflictException('Erro ao atualizar usuário');
     }
   }
 }

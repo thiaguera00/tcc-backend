@@ -47,11 +47,9 @@ export class UserRepository {
     });
   }
 
-  async update(
+  async updateUserSearch(
     userId: string,
     data: Partial<{
-      name: string;
-      email: string;
       level: string;
       is_first_access: boolean;
       updated_at: Date;

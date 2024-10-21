@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -39,8 +40,12 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/updateUser')
-  async update(@Body() userData: IUpdateUser, userId: string) {
+  @Put('/updateUser')
+  async update(@Body() userData: IUpdateUser, @Req() request: CustomRequest) {
+    const userId = request.user.userId;
+    if (!userId) {
+      throw new Error('Usuário não autenticado');
+    }
     return this.userService.update(userData, userId);
   }
 }

@@ -136,7 +136,7 @@ export class IaAssistentService {
       await this.searchRepository.create(createSearchData);
 
       const userLevel = this.extractLevelFromIAResponse(nivel);
-      await this.userRepository.update(userId, {
+      await this.userRepository.updateUserSearch(userId, {
         level: userLevel,
         is_first_access: false,
         updated_at: new Date(),

@@ -14,5 +14,7 @@ export interface CustomRequest extends Request {
 export interface IUpdateUser {
   name?: string;
   email?: string;
-  password?: string;
+  level?: string;
+  points?: number;
+  is_first_access?: boolean;
 }
