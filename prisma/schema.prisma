@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            String
+  is_first_access Boolean
+  level           String?
+  points          Int
+  created_at      DateTime
+  updated_at      DateTime
+  deleted_at      DateTime?
+
+  searches        Search[]
+  userQuestions  UserQuestion[]
+
+  @@map("users")
+}
+
+model Search {
+  id                String   @id @default(uuid())
+  user_id           String   @unique
+  user              User     @relation(fields: [user_id], references: [id])
+  level_knowledge   String
+  language          String
+  learning_objective String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("search")
+}
+
+model Question {
+  id             String        @id @default(uuid())
+  question       String
+  difficulty_level String
+  created_at     DateTime      @default(now())
+
+  userQuestions  UserQuestion[]
+
+  @@map("question")
+}
+
+model UserQuestion {
+  id          String       @id @default(uuid())
+  question_id String
+  user_id     String
+
+  question    Question     @relation(fields: [question_id], references: [id])
+
+  user        User         @relation(fields: [user_id], references: [id])
+
+  userResponses UserResponse[]
+
+  @@map("user_question")
+}
+
+model UserResponse {
+  id              String        @id @default(uuid())
+  user_question_id String
+  response        String
+  is_correct      Boolean
+  response_at     DateTime      @default(now())
+
+  user_question   UserQuestion  @relation(fields: [user_question_id], references: [id])
+
+  @@map("user_response")
+}
+
+model Phase {
+  id          String       @id @default(uuid())
+  content_id  String       @unique
+  title       String
+  description String
+  created_at  DateTime     @default(now())
+  update_at   DateTime     @default(now())
+  deleted_at  DateTime?
+
+  content     Content      @relation(fields: [content_id], references: [id])
+
+  @@map("phase")
+}
+
+model Content {
+  id          String       @id @default(uuid())
+  description String
+  created_at  DateTime     @default(now())
+  update_at   DateTime     @default(now())
+  deleted_at  DateTime?
+
+  phase       Phase?
+
+  @@map("content")
+}
