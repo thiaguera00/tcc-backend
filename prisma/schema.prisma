@@ -22,6 +22,8 @@ model User {
 
   searches        Search[]
   userQuestions  UserQuestion[]
+  ProgressPhase ProgressPhase[]
+  conquests UserConquest[]
 
   @@map("users")
 }
@@ -81,12 +83,14 @@ model Phase {
   content_id  String       @unique
   title       String
   description String
+  count_question Int
   created_at  DateTime     @default(now())
   update_at   DateTime     @default(now())
   deleted_at  DateTime?
 
   content     Content      @relation(fields: [content_id], references: [id])
-
+  
+  progressPhase ProgressPhase[]
   @@map("phase")
 }
 
@@ -100,4 +104,42 @@ model Content {
   phase       Phase?
 
   @@map("content")
+}
+
+
+model ProgressPhase {
+  id          String       @id @default(uuid())
+  user_id     String
+  phase_id    String
+  status  String
+  score   Int
+  finished_at  DateTime
+
+  user        User         @relation(fields: [user_id], references: [id])
+  phase       Phase        @relation(fields: [phase_id], references: [id])
+
+  @@map("progress_phase")
+}
+
+model Conquest {
+  id             String        @id @default(uuid())
+  name        String
+  description   String
+  reward          Int
+  created_at     DateTime      @default(now())
+
+  userConquest UserConquest[]
+
+  @@map("conquest")
+}
+
+model UserConquest {
+  id          String       @id @default(uuid())
+  user_id     String
+  conquest_id String
+  obtained_at     DateTime 
+  user        User         @relation(fields: [user_id], references: [id])
+  conquest     Conquest     @relation(fields: [conquest_id], references: [id])
+
+  @@map("user_conquest")
 }

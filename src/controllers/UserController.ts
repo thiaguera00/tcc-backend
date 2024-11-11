@@ -11,7 +11,7 @@ export class UserController {
         try {
             const userData: ICreateUserDTO = req.body;
             const newUser = await this.userService.create(userData);
-            return res.status(201).json(newUser); // Retornando o novo usuário diretamente
+            return res.status(201).json(newUser);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error creating user' });

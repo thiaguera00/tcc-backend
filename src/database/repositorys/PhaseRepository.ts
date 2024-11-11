@@ -1,11 +1,12 @@
 import { prisma } from "..";
 
 export class PhaseRepository {
-    async create(data: { title: string, description: string, contentDescription: string }) {
+    async create(data: { title: string, description: string, contentDescription: string, count: number}) {
         return await prisma.phase.create({
             data: {
                 title: data.title,
                 description: data.description,
+                count_question: data.count,
                 content: {
                     create: {
                         description: data.contentDescription,
