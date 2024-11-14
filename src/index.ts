@@ -16,7 +16,7 @@ app.use('/users', userRoutes);
 app.use('/questions', questionRoutes);
 app.use('/phases', phaseRoutes)
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
