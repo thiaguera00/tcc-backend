@@ -22,7 +22,7 @@ progressRouter.post('/create', authMiddleware, async (req, res) => {
     }
 });
 
-progressRouter.get('/userId', authMiddleware, async (req, res) => {
+progressRouter.get('/user/:userId', authMiddleware, async (req, res) => {
     try {
         await progressPhaseController.getProgressByUserId(req, res);
     } catch (error) {
@@ -30,8 +30,7 @@ progressRouter.get('/userId', authMiddleware, async (req, res) => {
     }
 });
 
-
-progressRouter.put('//update/:progressPhaseId', authMiddleware, async (req, res) => {
+progressRouter.put('/update/:progressPhaseId', authMiddleware, async (req, res) => {
     try {
         await progressPhaseController.updateProgress(req, res);
     } catch (error) {

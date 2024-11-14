@@ -35,12 +35,13 @@ export class ProgressPhaseService {
     
     
     async getByUserId(userId: string) {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new Error(`User Not Found: ${user}`)
+        }
+
         const progressPhases = await this.progressPhaseRepository.findByUserId(userId);
 
-        if (!progressPhases) {
-            throw new Error("Progress Phase not found");
-        }
- 
         return progressPhases;
     }
 }
