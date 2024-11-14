@@ -13,7 +13,7 @@ export class ProgressPhaseController {
             return res.status(200).json(progress);
         } catch(error) {
             console.error('Error creating progress phase:', error);
-            return res.status(500).json( 'Error creating progress phase' );
+            return res.status(500).json( {message: 'Error creating progress phase' });
         }
     }
 
@@ -24,19 +24,19 @@ export class ProgressPhaseController {
             return res.status(200).json(progress);
         } catch (error) {
             console.error(error);
-            return res.status(500).json( 'Error creating progress phase' );
+            return res.status(500).json({message: 'Error find progress phase'});
         }
     }
 
     async updateProgress(req: Request, res: Response) {
         try {
-            const { userId } = req.params;
+            const { progressPhaseId } = req.params;
             const updateData: IUpdateProgress = req.body;
-            const progress = await this.progressPhaseService.update(userId, updateData);
+            const progress = await this.progressPhaseService.update(progressPhaseId, updateData);
             return res.status(200).json(progress);
         } catch (error) {
             console.error(error);
-            return res.status(500).json( 'Error updating progress phase' );
+            return res.status(500).json( {message: 'Error updating progress phase'});
         }
     }
 }
