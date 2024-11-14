@@ -44,6 +44,14 @@ userRoutes.get('/me', authMiddleware, async (req, res) => {
     }
 });
 
+userRoutes.put('/update/:id', authMiddleware, async (req, res) => {
+    try {
+        await userController.updateData(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 userRoutes.post('/classificationStudent', authMiddleware, async (req, res) => {
   try {
     await userController.classificationUserStudent(req, res);

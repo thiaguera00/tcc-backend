@@ -113,7 +113,7 @@ model ProgressPhase {
   phase_id    String
   status  String
   score   Int
-  finished_at  DateTime
+  finished_at  DateTime?
 
   user        User         @relation(fields: [user_id], references: [id])
   phase       Phase        @relation(fields: [phase_id], references: [id])

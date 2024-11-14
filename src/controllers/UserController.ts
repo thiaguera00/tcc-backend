@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ICreateUserDTO } from "../models/dtos/UserDto";
+import { ICreateUserDTO, IUpdateUser } from "../models/dtos/UserDto";
 import { UserService } from "../services/UserService";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -73,6 +73,21 @@ export class UserController {
         } catch (error) {
             console.error('Error retrieving user profile:', error);
             return res.status(500).json({ error: 'Error retrieving user profile' });
+        }
+    }
+
+    async updateData(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const updateData: IUpdateUser = req.body;
+
+            // Atualiza o usuário usando o serviço
+            const updatedUser = await this.userService.updateUser(id, updateData);
+
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            console.error('Error updating user data:', error);
+            return res.status(500).json('Error updating user data' );
         }
     }
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { UserRepository } from "../database/repositorys/UserRepository";
-import { ICreateUserDTO } from "../models/dtos/UserDto";
+import { ICreateUserDTO, IUpdateUser } from "../models/dtos/UserDto";
 import { SearchRepository } from "../database/repositorys/SearchRepository";
 
 export class UserService {
@@ -29,6 +29,42 @@ export class UserService {
       const user = await this.userRepository.findById(userId);
       return user;
     }
+
+    async updateUser(userId: string, updateData: IUpdateUser) { 
+      const existingUser = await this.userRepository.findById(userId);
+    
+      if (!existingUser) {
+        throw new Error('User not found');
+      }
+    
+      if (Object.keys(updateData).length === 0) {
+        throw new Error('No data provided to update');
+      }
+    
+      // Atualizar pontos, somando ao valor atual
+      if (updateData.points !== undefined) {
+        updateData.points = (existingUser.points || 0) + updateData.points;
+      }
+    
+      const validFields: (keyof IUpdateUser)[] = [
+        'name',
+        'email',
+        'level',
+        'points',
+        'is_first_access'
+      ];
+    
+      const dataToUpdate: Partial<IUpdateUser> = {};
+      for (const field of validFields) {
+        if (updateData[field] !== undefined) {
+          dataToUpdate[field] = updateData[field] as any;
+        }
+      }
+    
+      const updatedUser = await this.userRepository.updateUser(userId, dataToUpdate);
+      return updatedUser;
+    }
+    
 
     async classificationStudent(
       responseStudent: string[],

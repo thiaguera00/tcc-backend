@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { questionRoutes } from './routes/questionRoutes';
 import { phaseRoutes } from './routes/phaseRoutes';
+import progressRouter from './routes/phaseProgressRoute';
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/questions', questionRoutes);
 app.use('/phases', phaseRoutes)
+app.use('/progress', progressRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

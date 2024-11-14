@@ -30,12 +30,13 @@ export class PhaseRepository {
         });
     }
 
-    async update(id: string, data: { title?: string, description?: string, contentDescription?: string }) {
+    async update(id: string, data: { title?: string, description?: string, contentDescription?: string, count?: number}) {
         return await prisma.phase.update({
             where: { id },
             data: {
                 title: data.title,
                 description: data.description,
+                count_question: data.count,
                 content: data.contentDescription ? { update: { description: data.contentDescription } } : undefined,
             },
             include: { content: true },
