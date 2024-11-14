@@ -43,8 +43,8 @@ export class PhaseController {
     async updatePhase(req: Request, res: Response): Promise<Response> {
         try {
             const { id } = req.params;
-            const { title, description, contentDescription } = req.body;
-            const phase = await this.phaseService.updatePhase(id, { title, description, contentDescription });
+            const { title, description, contentDescription, count } = req.body;
+            const phase = await this.phaseService.updatePhase(id, { title, description, contentDescription, count });
             return res.status(200).json(phase);
         } catch (err) {
             console.error('Error updating phase:', err);
