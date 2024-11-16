@@ -5,7 +5,6 @@ import { UserRepository } from '../database/repositorys/UserRepository';
 import { authMiddleware } from '../middlewares/AuthMiddleware';
 import { SearchRepository } from '../database/repositorys/SearchRepository';
 
-
 const userRoutes = Router();
 const userRepository = new UserRepository();
 const searchRepository = new SearchRepository();
