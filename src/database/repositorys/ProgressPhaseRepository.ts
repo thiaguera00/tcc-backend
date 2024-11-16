@@ -7,9 +7,6 @@ export class ProgressPhaseRepository {
             data: {
                 user_id: data.user_id,
                 phase_id: data.phase_id,
-                status: data.status,
-                score: data.score,
-                finished_at: null,
             },
         });
     }

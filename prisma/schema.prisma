@@ -111,8 +111,8 @@ model ProgressPhase {
   id          String       @id @default(uuid())
   user_id     String
   phase_id    String
-  status  String
-  score   Int
+  status  String?
+  score   Int?
   finished_at  DateTime?
 
   user        User         @relation(fields: [user_id], references: [id])
