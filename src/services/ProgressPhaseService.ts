@@ -32,7 +32,19 @@ export class ProgressPhaseService {
         const updatedProgress = await this.progressPhaseRepository.update(progressPhaseId, data);
         return updatedProgress;
     }
-    
+
+    async findOrCreateProgress(userId: string, phaseId: string) {
+        let progress = await this.progressPhaseRepository.findByUserIdAndPhaseId(userId, phaseId);
+        
+        if (!progress) {
+            progress = await this.progressPhaseRepository.create({
+                user_id: userId,
+                phase_id: phaseId,
+            });
+        }
+ 
+        return progress;
+    }
     
     async getByUserId(userId: string) {
         const user = await this.userRepository.findById(userId);

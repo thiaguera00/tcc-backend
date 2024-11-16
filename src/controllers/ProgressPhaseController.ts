@@ -39,4 +39,15 @@ export class ProgressPhaseController {
             return res.status(500).json( {message: 'Error updating progress phase'});
         }
     }
+
+    async findOrCreateProgress(req: Request, res: Response) {
+        try {
+            const { userId, phaseId } = req.params;
+            const progress = await this.progressPhaseService.findOrCreateProgress(userId, phaseId);
+            return res.status(200).json(progress);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error finding or creating progress phase' });
+        }
+    } 
 }
