@@ -79,18 +79,21 @@ model UserResponse {
 }
 
 model Phase {
-  id          String       @id @default(uuid())
-  content_id  String       @unique
-  title       String
-  description String
+  id            String          @id @default(uuid())
+  content_id    String          @unique
+  title         String
+  description   String
   count_question Int
-  created_at  DateTime     @default(now())
-  update_at   DateTime     @default(now())
-  deleted_at  DateTime?
+  created_at    DateTime        @default(now())
+  update_at     DateTime        @default(now())
+  deleted_at    DateTime?
 
-  content     Content      @relation(fields: [content_id], references: [id])
+  order         Int
+
+  content       Content         @relation(fields: [content_id], references: [id])
   
   progressPhase ProgressPhase[]
+
   @@map("phase")
 }
 

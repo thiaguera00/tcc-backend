@@ -32,19 +32,6 @@ export class ProgressPhaseService {
         const updatedProgress = await this.progressPhaseRepository.update(progressPhaseId, data);
         return updatedProgress;
     }
-
-    async findOrCreateProgress(userId: string, phaseId: string) {
-        let progress = await this.progressPhaseRepository.findByUserIdAndPhaseId(userId, phaseId);
-        
-        if (!progress) {
-            progress = await this.progressPhaseRepository.create({
-                user_id: userId,
-                phase_id: phaseId,
-            });
-        }
- 
-        return progress;
-    }
     
     async getByUserId(userId: string) {
         const user = await this.userRepository.findById(userId);
@@ -56,4 +43,50 @@ export class ProgressPhaseService {
 
         return progressPhases;
     }
+
+async findProgress(userId: string, phaseId: string) {
+    const user = await this.userRepository.findById(userId);
+    const phase = await this.phaseRepository.findById(phaseId);
+
+    if (!user || !phase) {
+        throw new Error("User or Phase not found");
+    }
+
+    const progressPhase = await this.progressPhaseRepository.findByUserIdAndPhaseId(userId, phaseId);
+    
+    if (progressPhase) {
+        return progressPhase;
+    }
+
+    const previousPhase = await this.phaseRepository.findPreviousPhase(phaseId);
+
+    if (!previousPhase) {
+        const newProgressPhase = await this.createProgressWithDefaults({
+            user_id: userId,
+            phase_id: phaseId,
+        });
+        return newProgressPhase;
+    }
+
+    const previousProgressPhase = await this.progressPhaseRepository.findByUserIdAndPhaseId(userId, previousPhase.id);
+
+    if (!previousProgressPhase || previousProgressPhase.status !== 'concluida') {
+        throw new Error("User has not completed the previous phase. Unauthorized access.");
+    }
+
+    const newProgressPhase = await this.createProgressWithDefaults({
+        user_id: userId,
+        phase_id: phaseId,
+    });
+
+    return newProgressPhase;
+}
+
+async createProgressWithDefaults(data: ICreateProgress) {
+    return await this.progressPhaseRepository.create({
+        ...data,
+        status: 'incompleto',
+    });
+}
+
 }
