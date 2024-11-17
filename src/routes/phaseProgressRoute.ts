@@ -38,9 +38,9 @@ progressRouter.put('/update/:progressPhaseId', authMiddleware, async (req, res) 
     }
 });
 
-progressRouter.get('/find-or-create/:userId/:phaseId', authMiddleware, async (req, res) => {
+progressRouter.get('/find/:userId/:phaseId', authMiddleware, async (req, res) => {
     try {
-        await progressPhaseController.findOrCreateProgress(req, res);
+        await progressPhaseController.findProgress(req, res);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }

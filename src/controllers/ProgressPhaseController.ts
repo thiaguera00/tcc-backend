@@ -40,10 +40,10 @@ export class ProgressPhaseController {
         }
     }
 
-    async findOrCreateProgress(req: Request, res: Response) {
+    async findProgress(req: Request, res: Response) {
         try {
             const { userId, phaseId } = req.params;
-            const progress = await this.progressPhaseService.findOrCreateProgress(userId, phaseId);
+            const progress = await this.progressPhaseService.findProgress(userId, phaseId);
             return res.status(200).json(progress);
         } catch (error) {
             console.error(error);
