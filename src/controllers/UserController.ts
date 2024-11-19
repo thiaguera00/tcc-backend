@@ -81,7 +81,6 @@ export class UserController {
             const { id } = req.params;
             const updateData: IUpdateUser = req.body;
 
-            // Atualiza o usuário usando o serviço
             const updatedUser = await this.userService.updateUser(id, updateData);
 
             return res.status(200).json(updatedUser);
@@ -112,6 +111,17 @@ export class UserController {
             return res.status(500).json({ error: 'Error classifying user level' });
         }
     }
-    
+
+    async inactiveUser(req: Request, res: Response) {
+        try {
+            const {userId} = req.params;
+            const user = await this.userService.inactive(userId);
+            return res.status(204).json(user);
+        } catch (error) {
+            console.error('Error inaticve user:', error);
+            return res.status(500).json({ error: 'Error inactive user' });
+        }
+    }
+
 }
 
