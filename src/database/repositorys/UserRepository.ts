@@ -34,6 +34,7 @@ export class UserRepository {
             points: true,
             created_at: true,
             updated_at: true,
+            deleted_at: true,
         }
     });
   }
@@ -88,5 +89,15 @@ export class UserRepository {
         updated_at: new Date(),
       },
     });
+  }
+
+  async inactiveUser(userId: string) {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        deleted_at: new Date(),
+        updated_at: new Date(),
+      },
+    })
   }
 }

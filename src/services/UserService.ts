@@ -40,8 +40,7 @@ export class UserService {
       if (Object.keys(updateData).length === 0) {
         throw new Error('No data provided to update');
       }
-    
-      // Atualizar pontos, somando ao valor atual
+
       if (updateData.points !== undefined) {
         updateData.points = (existingUser.points || 0) + updateData.points;
       }
@@ -149,4 +148,15 @@ export class UserService {
       }
       return 'Não identificado';
   } 
+
+  async inactive(userId: string) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error(`User Not Found: ${userId}`);
+    }
+
+    const inactiveUser = await this.userRepository.inactiveUser(userId);
+
+    return inactiveUser
+  }
 }

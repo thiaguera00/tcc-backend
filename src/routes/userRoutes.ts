@@ -58,5 +58,12 @@ userRoutes.post('/classificationStudent', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 })
+userRoutes.delete('/inactive/:userId', authMiddleware, async (req, res) => {
+  try {
+    await userController.inactiveUser(req, res);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 export { userRoutes };
