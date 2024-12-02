@@ -123,5 +123,41 @@ export class UserController {
         }
     }
 
+    async recoverPassword(req: Request, res: Response) {
+        try {
+            const {email} = req.body;
+
+            const user = await this.userService.recoverPasswordUser(email);
+            return res.status(200).json(user)
+        } catch(error) {
+            console.error('Error inaticve user:', error);
+            return res.status(404).json({ error: 'Email not found' });
+        }
+    }
+
+    async resetPassword(req: Request, res: Response) {
+        try {
+            const { token, newPassword } = req.body;
+
+            if (!token || !newPassword) {
+                return res.status(400).json({ error: "Token e nova senha são obrigatórios" });
+            }
+
+            const response = await this.userService.resetPassword(token, newPassword);
+
+            return res.status(200).json(response);
+        } catch (error: any) {
+            console.error("Erro ao redefinir senha:", error.message);
+
+            if (error.message === "Token inválido ou expirado") {
+                return res.status(400).json({ error: "Token inválido ou expirado" });
+            } else if (error.message === "Usuário não encontrado") {
+                return res.status(404).json({ error: "Usuário não encontrado" });
+            }
+
+            return res.status(500).json({ error: "Erro interno do servidor" });
+        }
+    }
+
 }
 
