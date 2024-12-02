@@ -4,11 +4,13 @@ import { UserService } from '../services/UserService';
 import { UserRepository } from '../database/repositorys/UserRepository';
 import { authMiddleware } from '../middlewares/AuthMiddleware';
 import { SearchRepository } from '../database/repositorys/SearchRepository';
+import { PasswordResetRepository } from '../database/repositorys/PasswordResetRepository';
 
 const userRoutes = Router();
 const userRepository = new UserRepository();
 const searchRepository = new SearchRepository();
-const userService = new UserService(userRepository, searchRepository);
+const recoveryRepository = new PasswordResetRepository();
+const userService = new UserService(userRepository, searchRepository, recoveryRepository);
 const userController = new UserController(userService);
 
 userRoutes.post('/create', async (req, res) => {
@@ -64,6 +66,21 @@ userRoutes.delete('/inactive/:userId', authMiddleware, async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
+})
+
+userRoutes.post('/recovery-password', async(req, res) => {
+    try {
+        await userController.recoverPassword(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+userRoutes.post('/reset-password', async(req, res) => {
+    try {
+        await userController.resetPassword(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 })
 
 export { userRoutes };

@@ -2,9 +2,17 @@ import axios from "axios";
 import { UserRepository } from "../database/repositorys/UserRepository";
 import { ICreateUserDTO, IUpdateUser } from "../models/dtos/UserDto";
 import { SearchRepository } from "../database/repositorys/SearchRepository";
+import { v4 as uuidv4 } from 'uuid';
+import nodemailer from 'nodemailer';
+import { PasswordResetRepository } from "../database/repositorys/PasswordResetRepository";
+import * as bcrypt from 'bcrypt';
 
 export class UserService {
-    constructor(private userRepository: UserRepository, private searchRepository: SearchRepository) {}
+    constructor(
+      private userRepository: UserRepository, 
+      private searchRepository: SearchRepository,
+      private passwordResetRepository: PasswordResetRepository,
+    ) {}
     async create(user: ICreateUserDTO) {
       try {
           const newUser = await this.userRepository.createUserStudent(user);
@@ -30,7 +38,7 @@ export class UserService {
       return user;
     }
 
-    async updateUser(userId: string, updateData: IUpdateUser) { 
+    async updateUser(userId: string, updateData: IUpdateUser) {
       const existingUser = await this.userRepository.findById(userId);
     
       if (!existingUser) {
@@ -40,7 +48,7 @@ export class UserService {
       if (Object.keys(updateData).length === 0) {
         throw new Error('No data provided to update');
       }
-
+    
       if (updateData.points !== undefined) {
         updateData.points = (existingUser.points || 0) + updateData.points;
       }
@@ -50,14 +58,21 @@ export class UserService {
         'email',
         'level',
         'points',
-        'is_first_access'
+        'password',
+        'is_first_access',
       ];
     
       const dataToUpdate: Partial<IUpdateUser> = {};
+    
       for (const field of validFields) {
         if (updateData[field] !== undefined) {
           dataToUpdate[field] = updateData[field] as any;
         }
+      }
+    
+      if (dataToUpdate.password) {
+        const hashedPassword = await bcrypt.hash(dataToUpdate.password, 10);
+        dataToUpdate.password = hashedPassword;
       }
     
       const updatedUser = await this.userRepository.updateUser(userId, dataToUpdate);
@@ -158,5 +173,58 @@ export class UserService {
     const inactiveUser = await this.userRepository.inactiveUser(userId);
 
     return inactiveUser
+  }
+
+  async recoverPasswordUser(email: string) {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+        throw new Error("Usuário não encontrado");
+    }
+
+    const resetToken = uuidv4();
+    const tokenExpires = new Date();
+    tokenExpires.setHours(tokenExpires.getHours() + 1);
+
+    await this.passwordResetRepository.createToken(user.id, resetToken, tokenExpires);
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env["PASSWORD-EMAIL"],
+        },
+    });
+
+    const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`;
+    const mailOptions = {
+        from: '"Nix"',
+        to: email,
+        subject: "Recuperação de Senha",
+        text: `Olá, você solicitou a recuperação de senha. Acesse o link abaixo para redefinir sua senha:\n\n${resetLink}`,
+        html: `<p>Olá, você solicitou a recuperação de senha. Acesse o link abaixo para redefinir sua senha:</p><a href="${resetLink}">Redefinir senha</a>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return { message: "E-mail de recuperação enviado com sucesso" };
+}
+
+async resetPassword(token: string, newPassword: string) {
+    const tokenData = await this.passwordResetRepository.findByToken(token);
+    if (!tokenData) {
+        throw new Error("Token inválido ou expirado");
+    }
+
+    const user = await this.userRepository.findById(tokenData.userId);
+    if (!user) {
+        throw new Error("Usuário não encontrado");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.updateUser(user.id, { password: hashedPassword });
+
+    await this.passwordResetRepository.deleteToken(token);
+
+    return { message: "Senha redefinida com sucesso" };
   }
 }

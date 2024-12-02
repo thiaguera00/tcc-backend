@@ -9,5 +9,6 @@ export interface IUpdateUser {
     email?: string;
     level?: string;
     points?: number;
+    password?: string;
     is_first_access?: boolean;
 }

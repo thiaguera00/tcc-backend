@@ -24,6 +24,7 @@ model User {
   userQuestions  UserQuestion[]
   ProgressPhase ProgressPhase[]
   conquests UserConquest[]
+  passwordReset PasswordReset[]
 
   @@map("users")
 }
@@ -145,4 +146,16 @@ model UserConquest {
   conquest     Conquest     @relation(fields: [conquest_id], references: [id])
 
   @@map("user_conquest")
+}
+
+model PasswordReset {
+  id          String   @id @default(uuid())
+  userId      String
+  token       String   @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("password_resets")
 }
