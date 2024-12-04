@@ -112,6 +112,23 @@ export class UserController {
         }
     }
 
+    async assignUserConquest(req: Request, res: Response): Promise<Response> {
+        try {
+          const { userId } = req.params;
+          const { conquestName } = req.body;
+    
+          if (!userId || !conquestName) {
+            return res.status(400).json({ error: 'User ID e Conquest Name são obrigatórios' });
+          }
+    
+          const userConquest = await this.userService.assignConquest(userId, conquestName);
+          return res.status(200).json(userConquest);
+        } catch (error) {
+          console.error('Erro ao atribuir conquista ao usuário:', error);
+          return res.status(500).json({ error: 'Erro ao atribuir conquista ao usuário' });
+        }
+      }
+
     async inactiveUser(req: Request, res: Response) {
         try {
             const {userId} = req.params;

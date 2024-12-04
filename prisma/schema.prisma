@@ -126,8 +126,8 @@ model ProgressPhase {
 }
 
 model Conquest {
-  id             String        @id @default(uuid())
-  name        String
+  id            String        @id @default(uuid())
+  name          String        @unique 
   description   String
   reward          Int
   created_at     DateTime      @default(now())

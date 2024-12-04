@@ -6,12 +6,16 @@ import { v4 as uuidv4 } from 'uuid';
 import nodemailer from 'nodemailer';
 import { PasswordResetRepository } from "../database/repositorys/PasswordResetRepository";
 import * as bcrypt from 'bcrypt';
+import { UserConquestRepository } from "../database/repositorys/UserConquestRepository";
+import { ConquestRepository } from "../database/repositorys/ConquestRepository";
 
 export class UserService {
     constructor(
       private userRepository: UserRepository, 
       private searchRepository: SearchRepository,
       private passwordResetRepository: PasswordResetRepository,
+      private userConquestRepository: UserConquestRepository,
+      private conquestRepository: ConquestRepository
     ) {}
     async create(user: ICreateUserDTO) {
       try {
@@ -79,6 +83,21 @@ export class UserService {
       return updatedUser;
     }
     
+    async assignConquest(userId: string, conquestName: string) {
+      try {
+        const conquest = await this.conquestRepository.findByName(conquestName);
+  
+        if (!conquest) {
+          throw new Error('Conquista não encontrada');
+        }
+  
+        const userConquest = await this.userConquestRepository.assignConquestToUser(userId, conquest.id);
+        return userConquest;
+      } catch (error) {
+        console.error('Erro ao atribuir conquista ao usuário:', error);
+        throw error;
+      }
+    }
 
     async classificationStudent(
       responseStudent: string[],
