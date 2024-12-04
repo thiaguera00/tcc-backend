@@ -27,6 +27,16 @@ export class UserService {
       }
     }
 
+    async createAdmin(user: ICreateUserDTO) {
+      try {
+          const newUser = await this.userRepository.createUserAdmin(user);
+          return newUser;
+      } catch (error) {
+          console.error('Error creating user:', error);
+          throw error;
+      }
+    }
+
     async listAll() {
       const allUser = await this.userRepository.listAll();
       return allUser;

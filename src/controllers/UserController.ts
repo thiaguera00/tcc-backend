@@ -18,6 +18,16 @@ export class UserController {
         }
     }
     
+    async createUserAdmin(req: Request, res: Response) {
+        try {
+            const userData: ICreateUserDTO = req.body;
+            const newUser = await this.userService.createAdmin(userData);
+            return res.status(201).json(newUser);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error creating user' });
+        }
+    }
 
     async listAllUsers(req: Request, res: Response): Promise<Response> {
         try {

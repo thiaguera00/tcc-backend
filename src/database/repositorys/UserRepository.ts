@@ -23,6 +23,26 @@ export class UserRepository {
       });
     }
 
+    async createUserAdmin(user: ICreateUserDTO) {
+      if (!user.password) {
+        throw new Error('Password is required');
+      }
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+  
+      return prisma.user.create({
+        data: {
+          name: user.name,
+          email: user.email,
+          password: hashedPassword,
+          role: Role.ADMIN,
+          created_at: new Date(),
+          updated_at: new Date(),
+          is_first_access: true,
+          points: 0,
+        },
+      });
+    }
+
     async listAll() {
       return await prisma.user.findMany({
         select: {

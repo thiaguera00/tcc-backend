@@ -26,6 +26,14 @@ userRoutes.post('/create', async (req, res) => {
     }
 });
 
+userRoutes.post('/create-admin', async (req, res) => {
+    try {
+        await userController.createUserAdmin(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 userRoutes.get('/listUsers', async (req, res) => {
     try {
         await userController.listAllUsers(req, res);
