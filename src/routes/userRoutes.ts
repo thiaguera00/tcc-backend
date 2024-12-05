@@ -5,17 +5,29 @@ import { UserRepository } from '../database/repositorys/UserRepository';
 import { authMiddleware } from '../middlewares/AuthMiddleware';
 import { SearchRepository } from '../database/repositorys/SearchRepository';
 import { PasswordResetRepository } from '../database/repositorys/PasswordResetRepository';
+import { ConquestRepository } from '../database/repositorys/ConquestRepository';
+import { UserConquestRepository } from '../database/repositorys/UserConquestRepository';
 
 const userRoutes = Router();
 const userRepository = new UserRepository();
 const searchRepository = new SearchRepository();
 const recoveryRepository = new PasswordResetRepository();
-const userService = new UserService(userRepository, searchRepository, recoveryRepository);
+const conquestRepository = new ConquestRepository();
+const userConquestRepository = new UserConquestRepository();
+const userService = new UserService(userRepository, searchRepository, recoveryRepository, userConquestRepository, conquestRepository);
 const userController = new UserController(userService);
 
 userRoutes.post('/create', async (req, res) => {
     try {
         await userController.createUser(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+userRoutes.post('/create-admin', async (req, res) => {
+    try {
+        await userController.createUserAdmin(req, res);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -48,6 +60,14 @@ userRoutes.get('/me', authMiddleware, async (req, res) => {
 userRoutes.put('/update/:id', authMiddleware, async (req, res) => {
     try {
         await userController.updateData(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+userRoutes.post('/user-conquest/:userId', authMiddleware, async (req, res) => {
+    try {
+        await userController.assignUserConquest(req, res);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }

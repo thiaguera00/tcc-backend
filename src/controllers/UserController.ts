@@ -18,6 +18,16 @@ export class UserController {
         }
     }
     
+    async createUserAdmin(req: Request, res: Response) {
+        try {
+            const userData: ICreateUserDTO = req.body;
+            const newUser = await this.userService.createAdmin(userData);
+            return res.status(201).json(newUser);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error creating user' });
+        }
+    }
 
     async listAllUsers(req: Request, res: Response): Promise<Response> {
         try {
@@ -111,6 +121,23 @@ export class UserController {
             return res.status(500).json({ error: 'Error classifying user level' });
         }
     }
+
+    async assignUserConquest(req: Request, res: Response): Promise<Response> {
+        try {
+          const { userId } = req.params;
+          const { conquestName } = req.body;
+    
+          if (!userId || !conquestName) {
+            return res.status(400).json({ error: 'User ID e Conquest Name são obrigatórios' });
+          }
+    
+          const userConquest = await this.userService.assignConquest(userId, conquestName);
+          return res.status(200).json(userConquest);
+        } catch (error) {
+          console.error('Erro ao atribuir conquista ao usuário:', error);
+          return res.status(500).json({ error: 'Erro ao atribuir conquista ao usuário' });
+        }
+      }
 
     async inactiveUser(req: Request, res: Response) {
         try {
