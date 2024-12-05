@@ -48,18 +48,23 @@ export class UserController {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-
+    
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
-
+    
             const secret = process.env.JWT_SECRET;
             if (!secret) {
                 throw new Error('JWT_SECRET not found in environment variables');
             }
-
-            const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+    
+            const token = jwt.sign(
+                { userId: user.id, role: user.role, deleted_at: user.deleted_at },
+                secret,
+                { expiresIn: '1h' }
+            );
+    
             return res.status(200).json({ token });
         } catch (error) {
             console.error('Error during login:', error);
