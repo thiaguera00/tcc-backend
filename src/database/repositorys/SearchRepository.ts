@@ -14,4 +14,10 @@ export class SearchRepository {
         },
       });
     }
+
+    async listAllResponses() {
+      return prisma.search.findMany({
+        include: { user: true },
+      });
+    }
   }

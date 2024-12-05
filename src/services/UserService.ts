@@ -238,6 +238,16 @@ export class UserService {
     return { message: "E-mail de recuperação enviado com sucesso" };
 }
 
+async countUsersActive() {
+  const count  = await this.userRepository.countActiveAndInactiveUsers();
+  return count;
+}
+
+async responseSearch() {
+  const responses = await this.searchRepository.listAllResponses();
+  return responses;
+}
+
 async resetPassword(token: string, newPassword: string) {
     const tokenData = await this.passwordResetRepository.findByToken(token);
     if (!tokenData) {

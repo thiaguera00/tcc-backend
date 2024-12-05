@@ -191,5 +191,25 @@ export class UserController {
         }
     }
 
+    async countUsersActive(req: Request, res: Response) {
+        try {
+            const count = await this.userService.countUsersActive();
+            return res.status(200).json({ count });
+        } catch (error) {
+            console.error('Error counting active users:', error);
+            return res.status(500).json({ error: 'Error counting active users' });
+        }
+    }
+
+    async listAllResponseSearches(req: Request, res: Response) {
+        try {
+            const search = await this.userService.responseSearch();
+            return res.status(200).json(search);
+        } catch(error) {
+            console.error('Error list responses from search:', error);
+            return res.status(500).json({ error: 'Error list responses from search:' });
+        }
+    }
+
 }
 
