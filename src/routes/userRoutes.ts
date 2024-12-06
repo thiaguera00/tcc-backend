@@ -40,6 +40,21 @@ userRoutes.get('/listUsers', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+userRoutes.get('/active-users', async (req, res) => {
+    try {
+        await userController.countUsersActive(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+userRoutes.get('/search-users', async (req, res) => {
+    try {
+        await userController.listAllResponseSearches(req, res);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 userRoutes.post('/auth/login', async (req, res) => {
     try {

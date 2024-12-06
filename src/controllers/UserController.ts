@@ -48,18 +48,23 @@ export class UserController {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-
+    
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
-
+    
             const secret = process.env.JWT_SECRET;
             if (!secret) {
                 throw new Error('JWT_SECRET not found in environment variables');
             }
-
-            const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+    
+            const token = jwt.sign(
+                { userId: user.id, role: user.role, deleted_at: user.deleted_at },
+                secret,
+                { expiresIn: '1h' }
+            );
+    
             return res.status(200).json({ token });
         } catch (error) {
             console.error('Error during login:', error);
@@ -183,6 +188,26 @@ export class UserController {
             }
 
             return res.status(500).json({ error: "Erro interno do servidor" });
+        }
+    }
+
+    async countUsersActive(req: Request, res: Response) {
+        try {
+            const count = await this.userService.countUsersActive();
+            return res.status(200).json({ count });
+        } catch (error) {
+            console.error('Error counting active users:', error);
+            return res.status(500).json({ error: 'Error counting active users' });
+        }
+    }
+
+    async listAllResponseSearches(req: Request, res: Response) {
+        try {
+            const search = await this.userService.responseSearch();
+            return res.status(200).json(search);
+        } catch(error) {
+            console.error('Error list responses from search:', error);
+            return res.status(500).json({ error: 'Error list responses from search:' });
         }
     }
 

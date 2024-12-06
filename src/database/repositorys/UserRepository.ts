@@ -120,4 +120,22 @@ export class UserRepository {
       },
     })
   }
+
+  async countActiveAndInactiveUsers() {
+    return await prisma.user.groupBy({
+      by: ['deleted_at'],
+      _count: {
+        id: true,
+      },
+      orderBy: {
+        deleted_at: 'asc',
+      },
+    }).then(result => {
+      return {
+        active: result.find(group => group.deleted_at === null)?._count.id || 0,
+        inactive: result.find(group => group.deleted_at !== null)?._count.id || 0,
+      };
+    });
+  }
+  
 }
