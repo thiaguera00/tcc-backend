@@ -1,7 +1,7 @@
 import { prisma } from "..";
 
 export class PhaseRepository {
-    async create(data: { title: string; description: string; contentDescription: string; count: number }) {
+    async create(data: { title: string; description: string; contentDescription: string;}) {
         const lastPhase = await prisma.phase.findFirst({
             orderBy: {
                 order: 'desc',
@@ -13,7 +13,6 @@ export class PhaseRepository {
             data: {
                 title: data.title,
                 description: data.description,
-                count_question: data.count,
                 order: newOrder,
                 content: {
                     create: {
@@ -31,8 +30,12 @@ export class PhaseRepository {
     async findAll() {
         return await prisma.phase.findMany({
             include: { content: true },
+            orderBy: {
+                order: 'asc',
+            },
         });
     }
+    
 
     async findById(id: string) {
         return await prisma.phase.findUnique({
@@ -41,13 +44,12 @@ export class PhaseRepository {
         });
     }
 
-    async update(id: string, data: { title?: string, description?: string, contentDescription?: string, count?: number}) {
+    async update(id: string, data: { title?: string, description?: string, contentDescription?: string,}) {
         return await prisma.phase.update({
             where: { id },
             data: {
                 title: data.title,
                 description: data.description,
-                count_question: data.count,
                 content: data.contentDescription ? { update: { description: data.contentDescription } } : undefined,
             },
             include: { content: true },
@@ -61,13 +63,11 @@ export class PhaseRepository {
     }
 
     async findPreviousPhase(currentPhaseId: string) {
-        // Buscar a fase atual
         const currentPhase = await this.findById(currentPhaseId);
         if (!currentPhase) {
             throw new Error("Phase not found");
         }
     
-        // Buscar a fase anterior usando o campo `order`
         const previousPhase = await prisma.phase.findFirst({
             where: {
                 order: currentPhase.order - 1,
