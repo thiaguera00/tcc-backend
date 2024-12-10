@@ -3,7 +3,7 @@ import { PhaseRepository } from '../database/repositorys/PhaseRepository';
 
 export class PhaseService {
     constructor(private phaseRepository: PhaseRepository) {}
-    async createPhase(data: { title: string, description: string, contentDescription: string, count: number}) {
+    async createPhase(data: { title: string, description: string, contentDescription: string}) {
         return await this.phaseRepository.create(data)
     }
 

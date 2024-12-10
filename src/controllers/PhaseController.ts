@@ -8,7 +8,7 @@ export class PhaseController {
     async createPhase(req: Request, res: Response): Promise<Response> {
         try {
             const { title, description, contentDescription, count } = req.body;
-            const phase = await this.phaseService.createPhase({ title, description, count, contentDescription });
+            const phase = await this.phaseService.createPhase({ title, description, contentDescription });
             return res.status(201).json(phase);
         } catch (err) {
             console.error('Error creating phase:', err);

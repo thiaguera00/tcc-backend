@@ -84,7 +84,6 @@ model Phase {
   content_id    String          @unique
   title         String
   description   String
-  count_question Int
   created_at    DateTime        @default(now())
   update_at     DateTime        @default(now())
   deleted_at    DateTime?
