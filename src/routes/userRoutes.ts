@@ -8,7 +8,6 @@ import { PasswordResetRepository } from '../database/repositorys/PasswordResetRe
 import { ConquestRepository } from '../database/repositorys/ConquestRepository';
 import { UserConquestRepository } from '../database/repositorys/UserConquestRepository';
 
-
 const userRoutes = Router();
 const userRepository = new UserRepository();
 const searchRepository = new SearchRepository();
